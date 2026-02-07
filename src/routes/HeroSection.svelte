@@ -3,7 +3,7 @@
 </script>
 
 <section
-	class="relative flex min-h-[calc(100vh-6.5rem)] w-full flex-col justify-between overflow-hidden border-b border-gray-200 font-sans selection:bg-black selection:text-white"
+	class="relative flex min-h-[calc(100vh-7rem)] w-full flex-col justify-between overflow-hidden border-b border-gray-200 font-sans selection:bg-black selection:text-white"
 >
 	<!-- MAIN GRID LAYOUT -->
 	<div class="relative grid h-full w-full flex-grow grid-cols-1 md:grid-cols-12">

@@ -48,7 +48,7 @@
 		<!-- LEFT COLUMN: Sticky "Log" Header (3 Cols) -->
 		<div class="relative hidden md:col-span-3 md:block">
 			<div
-				class="sticky top-0 flex min-h-[calc(100vh-6.15rem)] flex-col justify-between border-r border-gray-200 p-8"
+				class="sticky top-0 flex min-h-[calc(100vh-7rem)] flex-col justify-between border-r border-gray-200 p-8"
 			>
 				<div>
 					<span class="block text-9xl font-bold tracking-tighter opacity-10">EXP</span>
