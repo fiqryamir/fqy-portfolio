@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    path { fill: black; }
+    text { fill: white; }
+    @media (prefers-color-scheme: dark) {
+      path { fill: white; }
+      text { fill: black; }
+    }
+  </style>
+  <path d="M0 0 H32 V22 L22 32 H0 Z" />
+  <text x="16" y="20" font-family="sans-serif" font-weight="900" font-size="18" text-anchor="middle">Q</text>
+</svg>
