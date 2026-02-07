@@ -23,6 +23,8 @@
 	let loading = true;
 	let loadingText = 'INITIALIZING...';
 
+	let scrollProgress = 0;
+
 	// Function to handle smooth scrolling manually
 	function scrollToSection(id: string) {
 		const element = document.getElementById(id);
@@ -112,6 +114,16 @@
 			}
 		}
 	];
+
+	function handleScroll() {
+		if (!mainContainer) return;
+
+		const scrollTop = mainContainer.scrollTop;
+		const scrollHeight = mainContainer.scrollHeight - mainContainer.clientHeight;
+
+		// Calculate percentage (0 to 100)
+		scrollProgress = (scrollTop / scrollHeight) * 100;
+	}
 </script>
 
 {#if loading}
@@ -252,48 +264,82 @@
 		{/if}
 		<!-- 1. FIXED HEADER -->
 		<header
-			class="z-40 flex shrink-0 items-center justify-between border-b border-gray-200 bg-white pr-6 pl-0"
+			class="z-40 flex h-16 shrink-0 items-center border-b border-gray-200 bg-white p-0 md:h-16"
 		>
-			<!-- Left: Hamburger (Visual Only) -->
+			<!-- [LEFT BOX]: Hamburger -->
 			<div
-				class="flex h-full w-16 cursor-pointer items-center justify-center border-r border-gray-200 px-4 py-3 transition-colors hover:bg-gray-50"
+				class="flex h-full w-16 cursor-pointer items-center justify-center border-r border-gray-200 transition-colors hover:bg-gray-50"
 				on:click={toggleMenu}
 			>
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="32"
 					height="32"
-					fill="#000000"
+					fill="currentColor"
 					viewBox="0 0 256 256"
-					><path
-						d="M224,160a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,160ZM40,104H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16Z"
-					></path></svg
 				>
+					<path
+						d="M224,160a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,160ZM40,104H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16Z"
+					/>
+				</svg>
 			</div>
 
-			<!-- Center: Navigation -->
-			<nav class="hidden gap-2 font-mono text-[10px] font-bold tracking-widest uppercase md:flex">
-				{#each navItems as item}
-					<button
-						on:click={() => scrollToSection(item.id)}
-						class="px-3 py-1 transition-all duration-300 {activeSection === item.id
-							? 'bg-black text-white'
-							: 'text-gray-400 hover:text-black'}"
-					>
-						{item.label}
-					</button>
-				{/each}
-			</nav>
+			<!-- [MIDDLE AREA]: THE PROGRESS VESSEL -->
+			<!-- This is the area besides the hamburger that fills up -->
+			<div class="relative flex h-full flex-1 items-center justify-between overflow-hidden px-8">
+				<!-- 1. THE FILLING BACKGROUND -->
+				<div
+					class="absolute inset-0 origin-left bg-gray-100 transition-transform duration-500"
+					style="transform: scaleX({scrollProgress /
+						100}); transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);"
+				></div>
 
-			<!-- Right: Status Indicator (Replaces Sign In) -->
-			<div class="flex items-center gap-2 font-mono text-[10px] font-bold">
-				<div class="relative flex h-2 w-2">
+				<!-- 2. THE BORDER-RIGHT (The "Needle") -->
+				<!-- 
+      - We use 'left' to move it across the parent container.
+      - We add 'transition-all' with the SAME duration and ease as the background.
+      - '-translate-x-full' ensures that at 100%, the line stays inside the container.
+    -->
+				{#if scrollProgress != 100}
+					<div
+						class="absolute top-0 h-full w-px -translate-x-full bg-gray-200 transition-all duration-500"
+						style="left: {scrollProgress}%; transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);"
+					></div>
+				{/if}
+
+				<!-- 3. NAV ITEMS (sitting on top) -->
+				<nav
+					class="relative z-10 hidden gap-8 font-mono text-[10px] font-bold tracking-widest uppercase md:flex"
+				>
+					{#each navItems as item}
+						<button
+							on:click={() => scrollToSection(item.id)}
+							class="transition-all duration-300 {activeSection === item.id
+								? 'bg-black px-2 py-0.5 text-white'
+								: 'text-gray-500 hover:text-black'}"
+						>
+							{item.label}
+						</button>
+					{/each}
+				</nav>
+
+				<!-- PERCENTAGE STATUS -->
+				<div class="relative z-10 font-mono text-[9px] font-bold text-gray-400">
+					LOG_LOAD: {Math.round(scrollProgress)}%
+				</div>
+			</div>
+
+			<!-- [RIGHT BOX]: Status Indicator -->
+			<div
+				class="flex h-full w-24 items-center justify-center border-l border-gray-200 px-4 font-mono text-[10px] font-bold"
+			>
+				<div class="relative mr-2 flex h-2 w-2">
 					<span
 						class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"
 					></span>
 					<span class="relative inline-flex h-2 w-2 rounded-full bg-green-500"></span>
 				</div>
-				<span>ONLINE</span>
+				ONLINE
 			</div>
 		</header>
 
@@ -311,6 +357,7 @@
 			<!-- We bind 'mainContainer' here to use in the script -->
 			<main
 				bind:this={mainContainer}
+				on:scroll={handleScroll}
 				class="scrollbar-hide relative flex-1 overflow-y-auto bg-white"
 			>
 				<div class="flex min-h-full w-full flex-col">
